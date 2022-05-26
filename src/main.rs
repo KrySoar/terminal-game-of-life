@@ -155,6 +155,22 @@ fn main() {
 
     map.set_state(first_cell_x+7,first_cell_y-4,State::Alive);
 
+    let starting_pattern: &[(i16,i16)] = &[
+        (0,0),
+        (2,0),
+        (2,1),
+        (4,2),
+        (4,3),
+        (4,4),
+        (6,3),
+        (6,4),
+        (6,5),
+        (7,4),
+    ];
+    for &(dx,dy) in starting_pattern {
+        map.set_state(first_cell_x+dx,first_cell_y-dy,State::Alive);
+    }
+
     loop {
         clear_screen();
         map.next_gen();

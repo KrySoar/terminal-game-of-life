@@ -65,28 +65,28 @@ impl Grid {
         let cell_state = self.get_state(x as i16  ,y as i16);
 
         let upper_left = self.get_state(x-1,y-1);
-        let upper_ = self.get_state(x,y-1);
+        let upper = self.get_state(x,y-1);
         let upper_right = self.get_state(x+1,y-1);
 
         let middle_left = self.get_state(x-1,y);
         let middle_right = self.get_state(x+1,y);
 
         let bottom_left = self.get_state(x-1,y+1);
-        let bottom_ = self.get_state(x,y+1);
+        let bottom = self.get_state(x,y+1);
         let bottom_right = self.get_state(x+1,y+1);
 
         let mut cell_count = 0;
 
 
         if matches!(upper_left,State::Alive) { cell_count += 1; }
-        if matches!(upper_,State::Alive) { cell_count += 1; }
+        if matches!(upper,State::Alive) { cell_count += 1; }
         if matches!(upper_right,State::Alive) { cell_count += 1; }
 
         if matches!(middle_left,State::Alive) { cell_count += 1; }
         if matches!(middle_right,State::Alive) { cell_count += 1; }
 
         if matches!(bottom_left,State::Alive) { cell_count += 1; }
-        if matches!(bottom_,State::Alive) { cell_count += 1; }
+        if matches!(bottom,State::Alive) { cell_count += 1; }
         if matches!(bottom_right,State::Alive) { cell_count += 1; }
 
         cell_count

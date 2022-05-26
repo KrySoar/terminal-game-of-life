@@ -1,6 +1,11 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+
 use std::process::Command;
 use std::{thread,time};
 
+#[derive(PartialEq,Eq)]
+#[derive(Copy, Clone)]
 enum State {
     Dead,
     Alive,
@@ -16,18 +21,13 @@ struct Grid {
 
 impl Grid {
     fn new(width: i16,height: i16,) -> Grid {
-        let mut newvec = Vec::new();
-        for z in 0..(height*width) {
-            newvec.push(State::Dead);//fill the grid
-        }
-
         Grid {
             width,
             height,
             blocks: ('░','█'), // ('DEAD_CELL','ALIVE_CELL')
             //blocks: ('□','■'),//if you use these blocks, set the spacing to 1: (" ") instead of 0: ("") 
             spacing: String::from(""),
-            cells: newvec,
+            cells: vec![State::Dead; (height*width) as usize],
         }
     }
 
@@ -50,12 +50,12 @@ impl Grid {
         self.cells[index as usize] = input_state;
     }
 
-    fn get_state(&self,x: i16,y: i16) -> &State {
-        if (x < 0 || y < 0) || (x >= self.width as i16 || y >= self.height as i16)  {
-            return &State::Dead;
+    fn get_state(&self,x: i16,y: i16) -> State {
+        if (x < 0 || y < 0) || (x >= self.width as i16 || y >= self.height as i16) {
+            return State::Dead;
         } else {
             let index =  y * self.width + x;//convert 2D positioning to 1D index
-            &self.cells[index as usize]
+            self.cells[index as usize]
         }
     }
 
@@ -77,17 +77,16 @@ impl Grid {
 
         let mut cell_count = 0;
 
+        if upper_left == State::Alive { cell_count += 1; }
+        if upper == State::Alive { cell_count += 1; }
+        if upper_right == State::Alive { cell_count += 1; }
 
-        if matches!(upper_left,State::Alive) { cell_count += 1; }
-        if matches!(upper,State::Alive) { cell_count += 1; }
-        if matches!(upper_right,State::Alive) { cell_count += 1; }
+        if middle_left == State::Alive { cell_count += 1; }
+        if middle_right == State::Alive { cell_count += 1; }
 
-        if matches!(middle_left,State::Alive) { cell_count += 1; }
-        if matches!(middle_right,State::Alive) { cell_count += 1; }
-
-        if matches!(bottom_left,State::Alive) { cell_count += 1; }
-        if matches!(bottom,State::Alive) { cell_count += 1; }
-        if matches!(bottom_right,State::Alive) { cell_count += 1; }
+        if bottom_left == State::Alive { cell_count += 1; }
+        if bottom == State::Alive { cell_count += 1; }
+        if bottom_right == State::Alive { cell_count += 1; }
 
         cell_count
     }
@@ -96,27 +95,26 @@ impl Grid {
         let mut newvec: Vec<State> = Vec::new();
         for z in 0..(self.height*self.width) {
 
-            if matches!(self.cells[z as usize],State::Alive){
+            if self.cells[z as usize] == State::Alive{
                 newvec.push(State::Alive);
-            } else if matches!(self.cells[z as usize],State::Dead){
+            } else if self.cells[z as usize] == State::Dead {
                 newvec.push(State::Dead);
             }
 
         }
-
 
         for y in 0..self.height as i16 {
             for x in 0..self.width as i16 {
                 let nb_count = self.count_neighbors(x,y);
                 let index = y *self.width + x;
 
-                if matches!(self.get_state(x,y),State::Alive) {
+                if self.get_state(x, y) == State::Alive {
                     if nb_count != 2 && nb_count != 3 {
-                            newvec[index as usize] = State::Dead;
+                        newvec[index as usize] = State::Dead;
                     } else {
-                            newvec[index as usize] = State::Alive;
+                        newvec[index as usize] = State::Alive;
                     }
-                } else if  matches!(self.get_state(x,y),State::Dead) {
+                } else if  self.get_state(x, y) == State::Dead {
                     if nb_count == 3 {
                         newvec[index as usize] = State::Alive;
                     }
@@ -124,9 +122,15 @@ impl Grid {
             }
         }
         self.cells = newvec;
-
     }
+}
 
+fn clear_screen() {
+    if cfg!(unix) {
+        Command::new("clear").status().unwrap();
+    } else if cfg!(windows) {
+        Command::new("cls").status().unwrap();
+    }
 }
 
 fn main() {
@@ -155,20 +159,9 @@ fn main() {
         clear_screen();
         map.next_gen();
         map.draw();
-        delay(60); //delay between each generation in milliseconds
+
+        //delay between each generation in milliseconds
+        thread::sleep(time::Duration::from_millis(500));
     }
 }
 
-fn clear_screen() {
-
-    if cfg!(unix) {
-        Command::new("clear").status().unwrap();
-    } else if cfg!(windows) {
-        Command::new("cls").status().unwrap();
-    }
-
-}
-
-fn delay(time_ms: u64) {
-    thread::sleep(time::Duration::from_millis(time_ms));
-}

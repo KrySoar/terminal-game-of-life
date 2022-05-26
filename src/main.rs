@@ -64,30 +64,17 @@ impl Grid {
         let y = cell_y;
         let cell_state = self.get_state(x as i16  ,y as i16);
 
-        let upper_left = self.get_state(x-1,y-1);
-        let upper = self.get_state(x,y-1);
-        let upper_right = self.get_state(x+1,y-1);
-
-        let middle_left = self.get_state(x-1,y);
-        let middle_right = self.get_state(x+1,y);
-
-        let bottom_left = self.get_state(x-1,y+1);
-        let bottom = self.get_state(x,y+1);
-        let bottom_right = self.get_state(x+1,y+1);
-
         let mut cell_count = 0;
-
-        if upper_left == State::Alive { cell_count += 1; }
-        if upper == State::Alive { cell_count += 1; }
-        if upper_right == State::Alive { cell_count += 1; }
-
-        if middle_left == State::Alive { cell_count += 1; }
-        if middle_right == State::Alive { cell_count += 1; }
-
-        if bottom_left == State::Alive { cell_count += 1; }
-        if bottom == State::Alive { cell_count += 1; }
-        if bottom_right == State::Alive { cell_count += 1; }
-
+        for dy in [-1,0,1] {
+            for dx in [-1,0,1] {
+                if self.get_state(cell_x + dx, cell_y + dy) == State::Alive {
+                        cell_count += 1;
+                        if dx == 0 && dy == 0 {
+                            cell_count -= 1;
+                        }
+                }
+            }
+        }
         cell_count
     }
 
@@ -161,7 +148,7 @@ fn main() {
         map.draw();
 
         //delay between each generation in milliseconds
-        thread::sleep(time::Duration::from_millis(100));
+        thread::sleep(time::Duration::from_millis(70));
     }
 }
 

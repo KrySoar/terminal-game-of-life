@@ -135,25 +135,9 @@ fn clear_screen() {
 
 fn main() {
     let mut map = Grid::new(100,50); //default is (100,150) you can do more if you zoom out the terminal ([ctrl]'-') or ([ctrl][shift]'+')
-    map.draw();
 
     let first_cell_x = map.width/2;
     let first_cell_y= map.height/2;
-
-    //setting the first generation to an "infinite" pattern
-    map.set_state(first_cell_x,first_cell_y,State::Alive);
-    map.set_state(first_cell_x+2,first_cell_y,State::Alive);
-    map.set_state(first_cell_x+2,first_cell_y-1,State::Alive);
-    
-    map.set_state(first_cell_x+4,first_cell_y-2,State::Alive);
-    map.set_state(first_cell_x+4,first_cell_y-3,State::Alive);
-    map.set_state(first_cell_x+4,first_cell_y-4,State::Alive);
-    
-    map.set_state(first_cell_x+6,first_cell_y-3,State::Alive);
-    map.set_state(first_cell_x+6,first_cell_y-4,State::Alive);
-    map.set_state(first_cell_x+6,first_cell_y-5,State::Alive);
-
-    map.set_state(first_cell_x+7,first_cell_y-4,State::Alive);
 
     let starting_pattern: &[(i16,i16)] = &[
         (0,0),
@@ -177,7 +161,7 @@ fn main() {
         map.draw();
 
         //delay between each generation in milliseconds
-        thread::sleep(time::Duration::from_millis(500));
+        thread::sleep(time::Duration::from_millis(100));
     }
 }
 

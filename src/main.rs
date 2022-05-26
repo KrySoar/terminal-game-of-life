@@ -156,8 +156,8 @@ fn main() {
 
     loop {
         clear_screen();
-        map.draw();
         map.next_gen();
+        map.draw();
         delay(60); //delay between each generation in milliseconds
     }
 }

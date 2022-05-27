@@ -138,7 +138,7 @@ fn main() {
         (6,5),
         (7,4),
     ];
-    for &(dx,dy) in starting_pattern {
+    for (dx,dy) in starting_pattern {
         map.set_state(first_cell_x+dx,first_cell_y-dy,State::Alive);
     }
 

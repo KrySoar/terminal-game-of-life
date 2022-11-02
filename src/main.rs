@@ -114,9 +114,9 @@ impl Grid {
 
 fn clear_screen() {
     if cfg!(unix) {
-        Command::new("clear").status().unwrap();
+        Command::new("clear").status();//.unwrap();
     } else if cfg!(windows) {
-        Command::new("cls").status().unwrap();
+        Command::new("cls").status();//.unwrap();
     }
 }
 
